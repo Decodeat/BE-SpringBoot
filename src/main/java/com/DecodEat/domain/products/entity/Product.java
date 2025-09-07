@@ -2,6 +2,7 @@ package com.DecodEat.domain.products.entity;
 
 import com.DecodEat.domain.users.entity.User;
 import com.DecodEat.global.common.BaseEntity;
+import com.DecodEat.ocr.OcrResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -43,4 +44,8 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default // 원재료 리스트
     private List<ProductRawMaterial> ingredients = new ArrayList<>();
+
+    public void updateStatus(DecodeStatus status) {
+        this.decodeStatus = status;
+    }
 }

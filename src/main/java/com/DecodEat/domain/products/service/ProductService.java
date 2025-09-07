@@ -16,6 +16,7 @@ import com.DecodEat.domain.users.entity.User;
 import com.DecodEat.global.aws.s3.AmazonS3Manager;
 import com.DecodEat.global.dto.PageResponseDto;
 import com.DecodEat.global.exception.GeneralException;
+import com.DecodEat.ocr.OcrService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,6 +41,7 @@ public class ProductService {
     private final ProductImageRepository productImageRepository;
     private final ProductNutritionRepository productNutritionRepository;
     private final AmazonS3Manager amazonS3Manager;
+    private final OcrService ocrService;
 
 
     private static final int PAGE_SIZE = 12;
@@ -89,6 +91,9 @@ public class ProductService {
             productImageRepository.saveAll(infoImages);
 
             productInfoImageUrls = infoImages.stream().map(ProductInfoImage::getImageUrl).toList();
+
+            //todo: 일단은 구현용으로 단일 이미지 처리, 추후 리스트로 변경해야 함
+            ocrService.requestOcrAnalysis(savedProduct.getProductId(), productInfoImageUrls.get(0));
         }
 
         return ProductConverter.toProductRegisterDto(savedProduct, productInfoImageUrls);
